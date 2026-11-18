@@ -124,6 +124,8 @@ Bear/base/bull runs must use independent assumptions and produce:
 
 No reported value may be merged with an assumption without lineage.
 
+Margin of safety is `(intrinsic value - market price) / intrinsic value`. Potential return to intrinsic value is `(intrinsic value - market price) / market price`; positive values indicate potential upside and negative values indicate potential downside. Both are unavailable when their required inputs are missing or their denominator is zero.
+
 ## Stock ranking
 
 Default weights:

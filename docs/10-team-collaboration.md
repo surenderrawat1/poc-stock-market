@@ -42,7 +42,7 @@ Codex and Copilot may change the implementation together only after agreeing on 
 
 ### Copilot
 
-- Maintains architecture and ADR documents.
+- Owns architecture and ADR documents by default; coordinates with the implementer when a change affects those decisions.
 - Designs database schemas and migrations.
 - Implements NestJS domain boundaries.
 - Implements Python valuation and quantitative functions.
@@ -58,6 +58,12 @@ Codex and Copilot may change the implementation together only after agreeing on 
 - Maintains frontend test coverage.
 - Implements Docker tooling and local developer scripts.
 - Reviews frontend/API contract compatibility.
+
+### Documentation ownership
+
+- The implementer updates documentation affected by their work in the same change, including UI, tooling, API, data, or calculation documentation as applicable.
+- Copilot is the default owner of architecture and ADR files. Other contributors propose changes to those files and coordinate with Copilot before finalizing cross-cutting decisions.
+- The owner of each affected file is responsible for consistency and links; the other coding agent reviews cross-boundary changes. Product-owner decisions remain with the product owner.
 
 ## Phase workflow
 

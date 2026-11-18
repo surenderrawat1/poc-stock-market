@@ -103,15 +103,19 @@ For peer valuation, record the peer set and whether median, mean, or weighted me
 
 ## Margin of safety
 
+Margin of safety expresses the discount or premium relative to intrinsic value:
+
 \[
 MarginOfSafety = (intrinsicValue - marketPrice)/intrinsicValue
 \]
 
-Upside/downside:
+Potential return to intrinsic value expresses the price change relative to the current market price:
 
 \[
-UpsideDownside = (marketPrice - intrinsicValue)/intrinsicValue
+PotentialReturnToIntrinsicValue = (intrinsicValue - marketPrice)/marketPrice
 \]
+
+A positive result is potential upside; a negative result is potential downside. The UI and API must use this denominator and label the result as a scenario based on the selected intrinsic-value estimate, not as a forecast or guaranteed return. Margin of safety is unavailable when intrinsic value is zero or missing; potential return to intrinsic value is unavailable when market price is zero or missing.
 
 Results must identify the basis and market-price timestamp.
 

@@ -1,6 +1,6 @@
 # Implementation Roadmap
 
-Implementation occurs only phase by phase. A later phase begins only after explicit user approval of the previous phase.
+Implementation occurs phase by phase. A later phase begins only after the previous phase meets its exit criteria and the product owner explicitly approves it. Provider licensing gates live retrieval, caching, retention, and display; it does not by itself block work that can use user-supplied or otherwise permitted imports.
 
 No phase may use fake or generated financial data in production. Development-only sample data must use an unmistakable sample label and must not enter database migrations or production seed paths.
 
@@ -47,7 +47,7 @@ Medium.
 
 ### Objective
 
-Implement reference data and NSE 500 universe ingestion/import.
+Implement reference data and NSE 500 universe ingestion/import from a user-supplied or otherwise permitted constituent file. Preserve its source, effective date, and retrieval/import time; do not infer historical membership from today's constituent list.
 
 ### Deliverables
 
@@ -65,6 +65,7 @@ Medium.
 ### Exit criteria
 
 - Every record has source and timestamp metadata.
+- NSE 500 constituents are loaded from a user-supplied or otherwise permitted source, with effective dates and provenance retained.
 - Missing mandatory values are rejected.
 - Exchange-symbol and ISIN duplicates are detected.
 - Tests cover effective constituent dates and listing changes.
@@ -73,14 +74,14 @@ Medium.
 
 ### Objective
 
-Implement permitted provider adapters and synchronization.
+Implement the provider adapter boundary, permitted imports, and synchronization. Live provider integrations are optional extensions that require documented authorization before activation.
 
 ### Deliverables
 
 - Provider interface.
-- Official disabled Groww adapter placeholder.
-- Optional permitted NSE/BSE or licensed adapter.
-- Yahoo adapter only if authorization is documented.
+- Disabled Groww adapter placeholder; no live calls.
+- Optional NSE/BSE or licensed live adapter only after authorization is documented.
+- Yahoo adapter only if authorization is documented; otherwise leave disabled.
 - CSV and manual imports.
 - Sync logging and freshness policies.
 - Retry and cache behavior.
@@ -92,9 +93,12 @@ High.
 ### Exit criteria
 
 - No live call occurs until provider status is official or licensed.
+- Manual CSV and manual-entry imports work without live-provider credentials and retain source, as-of date, currency, units, and mapping provenance.
 - Failures preserve prior valid snapshots.
 - Sync audit details are visible.
 - Import row rejection is tested.
+
+Provider licensing is a gate for each live adapter and its related data use. It is not an exit criterion for the permitted manual-import capability. If a later feature requires live data, that feature remains unavailable until a permitted source is approved.
 
 ## Phase 4: Fundamental screener
 

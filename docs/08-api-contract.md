@@ -101,7 +101,7 @@ Statements require period type and basis filters.
 - `GET /api/v1/valuations/runs/{runId}`
 - `POST /api/v1/valuations/runs/{runId}/sensitivity`
 
-Valuation results include assumptions, input snapshot IDs, market-price timestamp, and method version.
+Valuation results include assumptions, input snapshot IDs, market-price timestamp, and method version. They expose margin of safety as `(intrinsicValue - marketPrice) / intrinsicValue` and potential return to intrinsic value as `(intrinsicValue - marketPrice) / marketPrice`. Each is unavailable when its denominator is zero or a required input is missing; the latter is a scenario metric, not a guaranteed return.
 
 ## Ranking
 
