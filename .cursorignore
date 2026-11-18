@@ -1,0 +1,40 @@
+# Cursor should not inspect secrets or local runtime state.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.credentials/
+provider-secrets/
+
+# Dependencies and generated output
+node_modules/
+.venv/
+venv/
+dist/
+build/
+out/
+.angular/
+coverage/
+htmlcov/
+__pycache__/
+*.py[cod]
+
+# Database and backup data
+*.sqlite
+*.sqlite3
+*.db
+mysql-data/
+postgres-data/
+backups/
+dumps/
+*.sql.gz
+
+# Local logs and caches
+logs/
+*.log
+.cache/
+.tmp/
+tmp/

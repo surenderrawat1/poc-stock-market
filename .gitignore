@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage/
+
+# Build output
+dist/
+build/
+out/
+.angular/
+coverage/
+htmlcov/
+*.egg-info/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Database and local runtime data
+*.sqlite
+*.sqlite3
+*.db
+mysql-data/
+postgres-data/
+backups/
+dumps/
+*.sql.gz
+
+# Logs and temporary files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.cache/
+.tmp/
+tmp/
+
+# IDE and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+
+# Raw provider credentials or downloaded source documents
+.credentials/
+provider-secrets/
