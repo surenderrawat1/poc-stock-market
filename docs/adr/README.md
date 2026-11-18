@@ -10,3 +10,4 @@ Architecture decisions are recorded as append-only ADR documents.
 4. [Decimal financial storage and Python calculation boundary](0004-decimal-calculation-policy.md)
 5. [Local-only deployment](0005-local-first-deployment.md)
 6. [Point-in-time backtesting policy](0006-point-in-time-backtesting.md)
+7. [Synchronous HTTP boundary for Python quant service](0007-synchronous-python-service.md)

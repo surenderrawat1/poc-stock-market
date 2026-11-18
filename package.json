@@ -1,0 +1,32 @@
+{
+  "name": "poc-stock-market-for-personal-use",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "api:build": "npm run build --workspace @stock-market/api",
+    "api:start": "npm run start --workspace @stock-market/api",
+    "api:start:dev": "npm run start:dev --workspace @stock-market/api",
+    "quant:start": "python -m quant",
+    "db:generate": "prisma generate",
+    "db:validate": "prisma validate",
+    "db:migrate": "prisma migrate dev",
+    "test:api": "npm run test --workspace @stock-market/api",
+    "test:quant": "python -m pytest services/quant/tests"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.0",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.0"
+  }
+}

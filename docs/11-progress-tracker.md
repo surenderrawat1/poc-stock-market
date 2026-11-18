@@ -16,7 +16,7 @@
 | Repository and architecture documentation | Complete | Copilot | Root README and docs |
 | Git, Copilot, Codex, and Cursor ignore files | Complete | Copilot | Ignore files |
 | Documentation review corrections | Complete | Codex | Roadmap, domain and calculation policies, API contract, collaboration guide, and tracker updated; source text verified as UTF-8 |
-| Phase 1 implementation | Not started | Shared, Copilot lead | Awaiting explicit approval |
+| Phase 1 implementation | In progress | Shared, Copilot lead | Approved by product owner on 2026-11-18; API, Python, and Prisma scaffolds underway |
 | Phase 2 implementation | Not started | Copilot + Codex | After Phase 1 |
 | Phase 3 implementation | Not started; live adapters gated on provider terms | Copilot lead | Manual/import path can proceed after Phase 2 and Phase 3 approval; each live adapter requires documented authorization |
 | Phase 4 implementation | Not started | Shared | After Phase 3 |
@@ -31,7 +31,7 @@
 
 | Phase | Scope | Status | Primary owner | Reviewer | Approval |
 |---|---|---|---|---|---|
-| 1 | Architecture and repository setup | Ready only after approval | Copilot | Codex + Product owner | Pending |
+| 1 | Architecture and repository setup | In progress | Copilot | Codex + Product owner | Approved by product owner on 2026-11-18 |
 | 2 | Database and NSE 500 universe from user-supplied or otherwise permitted constituents | Not started | Copilot | Codex + Product owner | Pending |
 | 3 | Import and provider adapter baseline; live integrations individually gated on terms | Not started | Copilot | Codex + Product owner | Pending |
 | 4 | Fundamental screener | Not started | Codex UI, Copilot API | Both | Pending |
@@ -48,15 +48,24 @@ Copy this table and update it for each implementation phase.
 
 | ID | Task | Owner | Status | Files | Acceptance criteria | Test expectations | Dependency | Reviewer |
 |---|---|---|---|---|---|---|---|---|
-| P1-01 | Create workspace structure | Copilot | Not started | Root workspace configuration; `apps/`, `services/`, `prisma/`, `docs/`, `docker/`, and `test/` directories as agreed | Agreed monorepo layout exists and module boundaries are documented | Workspace configuration validation | Phase 1 approval | Codex |
-| P1-02 | Scaffold NestJS API | Copilot | Not started | `apps/api/**` | API starts locally and exposes a health endpoint without external data | API health check | P1-01 | Codex |
-| P1-03 | Scaffold Angular application | Codex | Not started | `apps/web/**` | Frontend starts locally and has a documented development command | Frontend build | P1-01 | Copilot |
-| P1-04 | Scaffold Python service | Copilot | Not started | `services/quant/**` | Python service environment and calculation test setup are documented | Python unit test discovery or health check | P1-01 | Codex |
-| P1-05 | Add Prisma baseline | Copilot | Not started | `prisma/schema.prisma`, `prisma/migrations/**` | Baseline schema migrates against the local database | Migration apply and schema validation | P1-01 | Codex |
+| P1-01 | Create workspace structure | Copilot | Review | Root `package.json`; `apps/`, `services/`, `prisma/`, `docs/`; tests are colocated with their modules | npm workspace exists and module boundaries are documented | `npm install`; verify workspace scripts | Phase 1 approval | Codex |
+| P1-02 | Scaffold NestJS API | Copilot | Review | `apps/api/**` | API starts locally and exposes `/api/v1/health` without external data | `npm run api:build`; `npm run test:api`; HTTP health check | P1-01 | Codex |
+| P1-03 | Scaffold Angular application | Codex | Ready | `apps/web/**` | Frontend starts locally and has a documented development command | Frontend build | P1-01 | Copilot |
+| P1-04 | Scaffold Python service | Copilot | Review | `services/quant/**` | Python service environment and calculation test setup are documented | `npm run test:quant` | P1-01 | Codex |
+| P1-05 | Add Prisma baseline | Copilot | In progress | `prisma/schema.prisma`, `prisma/migrations/**` | Baseline schema migrates against the local database | `npm run db:validate`; apply migration to local MySQL | P1-01 | Codex |
 | P1-06 | Add Docker Compose | Codex | Not started | `docker-compose.yml`, `docker/**`, environment template | Services start on loopback with secrets supplied outside committed files | Local startup and health checks | P1-02 to P1-05 | Copilot |
 | P1-07 | Document setup commands | Codex | Not started | `README.md`, `docs/09-development-standards.md` | Install, migration, startup, test, lint, backup, and restore commands are documented and consistent with the repo | Verify documented links and run documented commands | P1-01 to P1-06 | Product owner |
 
-Do not mark P1 tasks ready before the product owner approves Phase 1.
+P1 tasks may be marked ready after product-owner approval; Phase 1 was approved on 2026-11-18.
+
+### Phase 1 implementation evidence
+
+- `npm install` completed; `npm audit` reported zero vulnerabilities.
+- `npm run api:build` passed; `npm run test:api` passed (1 test).
+- `GET http://127.0.0.1:3000/api/v1/health` returned `{"status":"ok"}`.
+- `python -m pip install -e "services/quant[dev]"` completed; `npm run test:quant` passed (1 test), and `GET http://127.0.0.1:8000/health` returned `{"status":"ok"}`.
+- `npm run db:validate` and `npm run db:generate` passed. The baseline migration is checked in but has not yet been applied because the local Docker engine is unavailable.
+- The product owner selected synchronous private HTTP for NestJS-to-Python communication; see ADR 0007. Calculation endpoints are not implemented yet.
 
 ## Phase dependencies
 
@@ -80,8 +89,8 @@ flowchart LR
 | B-001 | Groww official integration | Confirm official permitted data access and terms before any live integration | Product owner | Open | No live Groww integration; manual/import work is independent |
 | B-002 | NSE/BSE access | Confirm data feed, history, retention, and display terms before live ingestion | Product owner | Open | Use user-supplied or otherwise permitted constituent/import files until resolved |
 | B-003 | Yahoo access | Confirm whether an expressly permitted integration exists | Product owner | Open | Adapter disabled |
-| D-001 | Phase 1 approval | Begin repository implementation | Product owner | Pending | Explicit approval required |
-| D-002 | Python/TypeScript API boundary | Confirm synchronous HTTP or task queue | Copilot | Deferred to Phase 1 | ADR required |
+| D-001 | Phase 1 approval | Begin repository implementation | Product owner | Resolved | Product owner approved Phase 1 on 2026-11-18 |
+| D-002 | Python/TypeScript API boundary | Confirm synchronous HTTP or task queue before service integration | Product owner with Copilot | Resolved | Product owner selected synchronous private HTTP; see ADR 0007 |
 | D-003 | Portfolio cost basis policy | Choose initial lot-matching policy before portfolio implementation | Product owner | Pending | FIFO is documented as an option, not selected by this tracker |
 | D-004 | Risk metric conventions | Define return type, observation frequency/window, annualization, missing-observation handling, and risk-free rate source before exposing volatility or Sharpe results | Product owner with Copilot | Pending | See calculation policy; no conventions are inferred here |
 
@@ -98,6 +107,8 @@ Record decisions here for quick visibility and link to the corresponding ADR.
 | 2026-11-18 | Local-only deployment baseline | Product team | ADR 0005 | No public exposure by default |
 | 2026-11-18 | Point-in-time backtesting | Product team | ADR 0006 | Bias controls required |
 | 2026-11-18 | Documentation review updates | Codex | This tracker and linked docs | Manual/import work is separated from live-provider licensing gates; formula, ownership, and Phase 1 task details clarified |
+| 2026-11-18 | Phase 1 implementation started | Product owner | This tracker | Product owner approved foundation work; provider integrations remain out of scope |
+| 2026-11-18 | Python service boundary | Product owner | ADR 0007 | NestJS calls Python over private synchronous HTTP; no public quant endpoint or broker |
 
 ## Work-session handoff template
 

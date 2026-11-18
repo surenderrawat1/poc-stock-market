@@ -25,7 +25,7 @@ flowchart LR
     ADAPTERS --> IMPORT[CSV and manual imports]
     JOBS --> PY[Python quant worker]
     PY --> DB
-    API --> PY
+    API -->|private synchronous HTTP| PY
 ```
 
 ## Runtime components
@@ -71,6 +71,8 @@ The Python service owns:
 - Unit-tested calculation methods.
 
 The service is versioned. Every calculation result contains a calculation method version and the input snapshot used.
+
+NestJS calls the Python service over private synchronous HTTP. The browser calls NestJS only; the quant service is not exposed as a public or host-published API. Financial decimal values cross the JSON boundary as strings. See [ADR 0007](adr/0007-synchronous-python-service.md).
 
 ### MySQL
 
