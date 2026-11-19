@@ -73,17 +73,32 @@ The production seed path must not contain fictional financial values or sample s
 
 ## Commands
 
-Commands should be documented in root-level scripts or package documentation. At minimum, define commands for:
+Commands should be documented in the root README and package scripts. The root npm workspace preserves the existing API and quant commands and provides web commands:
 
-- Installation.
-- Database migration.
-- Migration rollback or recovery.
-- Development startup.
-- Test execution.
-- Lint and formatting.
-- Docker startup and shutdown.
-- Backup.
-- Restore.
+| Task | Command |
+|---|---|
+| Install locked JavaScript dependencies | `npm ci` |
+| Start web development server | `npm run web:start` |
+| Build web application | `npm run web:build` |
+| Test web application | `npm run web:test` |
+| Lint web application | `npm run web:lint` |
+| Build API | `npm run api:build` |
+| Test API | `npm run test:api` |
+| Test quant service | `npm run test:quant` |
+| Validate Prisma schema | `npm run db:validate` |
+| Generate Prisma client | `npm run db:generate` |
+| Apply checked-in migrations | `npm run db:migrate:deploy` |
+| Validate Docker Compose configuration without printing resolved environment values | `docker compose config --quiet` |
+| Start local containers | `docker compose up --build --detach` |
+| Stop containers and preserve database volume | `docker compose down` |
+
+API and Python lint commands are not configured. Do not document them as available until a linter is selected and wired into the workspace.
+
+On Windows, copy `.env.example` to the ignored `.env` file only when `.env` does not already exist. Keep credentials in that local file or a secret manager. The Compose file binds MySQL, API, and web host ports to `127.0.0.1`; the quant service has no host-published port. Use the PowerShell backup and restore procedures in the root README. Keep backups outside the database container and encrypt backups before moving them off-device.
+
+Migrations are applied explicitly with `npm run db:migrate:deploy` after the database is healthy. The API container must not perform schema migrations during startup.
+
+Prisma migrations are forward-only in this workflow. Recover from a faulty migration with a reviewed corrective migration or restore a verified backup; do not treat migration metadata commands as SQL rollback.
 
 ## Documentation maintenance
 

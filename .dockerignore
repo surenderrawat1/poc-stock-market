@@ -1,0 +1,17 @@
+.git
+.env
+.env.*
+!.env.example
+node_modules
+**/node_modules
+**/dist
+**/build
+**/.angular
+**/__pycache__
+**/.pytest_cache
+**/*.py[cod]
+**/*.egg-info
+backups
+dumps
+logs
+coverage

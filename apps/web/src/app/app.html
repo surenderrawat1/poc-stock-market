@@ -1,0 +1,63 @@
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Stock Research Workspace home">
+      <span class="brand-mark" aria-hidden="true">S</span>
+      <span>Stock Research<span class="brand-secondary"> / Personal workspace</span></span>
+    </a>
+    <span class="connection" [class.connection--ready]="apiState() === 'available'">
+      <span class="connection-dot" aria-hidden="true"></span>
+      @switch (apiState()) {
+        @case ('checking') { Checking local API }
+        @case ('available') { Local API connected }
+        @case ('unavailable') { Local API unavailable }
+      }
+    </span>
+  </header>
+
+  <main>
+    <section class="welcome" aria-labelledby="welcome-title">
+      <p class="eyebrow">LOCAL RESEARCH WORKSPACE</p>
+      <h1 id="welcome-title">A clearer view of your research.</h1>
+      <p class="welcome-copy">Your workspace is ready to take shape. Connect permitted data sources and build your research tools as each project phase is approved.</p>
+      <div class="status-note">
+        <span class="status-icon" aria-hidden="true">i</span>
+        <p>No market data is connected. This scaffold shows no financial values.</p>
+      </div>
+    </section>
+
+    <section class="modules" aria-labelledby="modules-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">WORKSPACE</p>
+          <h2 id="modules-title">Research modules</h2>
+        </div>
+        <span class="section-caption">Scaffold</span>
+      </div>
+
+      <div class="module-grid">
+        <article class="module-card module-card--active">
+          <span class="module-icon" aria-hidden="true">⌕</span>
+          <div><h3>Company universe</h3><p>Search and organize listed companies</p></div>
+          <span class="module-state">In setup</span>
+        </article>
+        <article class="module-card">
+          <span class="module-icon" aria-hidden="true">▤</span>
+          <div><h3>Company analysis</h3><p>Statements, ownership, and company history</p></div>
+          <span class="module-state">Planned</span>
+        </article>
+        <article class="module-card">
+          <span class="module-icon" aria-hidden="true">◌</span>
+          <div><h3>Valuation</h3><p>Explore documented assumptions and methods</p></div>
+          <span class="module-state">Planned</span>
+        </article>
+        <article class="module-card">
+          <span class="module-icon" aria-hidden="true">▥</span>
+          <div><h3>Portfolio</h3><p>Record holdings and review performance</p></div>
+          <span class="module-state">Planned</span>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>Personal use · Local-first</span><span>Research tools are being built in approved phases</span></footer>
+</div>

@@ -5,17 +5,22 @@
     "apps/*"
   ],
   "engines": {
-    "node": ">=22",
+    "node": "^22.13.0 || ^24.0.0",
     "npm": ">=10"
   },
   "scripts": {
     "api:build": "npm run build --workspace @stock-market/api",
     "api:start": "npm run start --workspace @stock-market/api",
     "api:start:dev": "npm run start:dev --workspace @stock-market/api",
+    "web:start": "npm run start --workspace @stock-market/web --",
+    "web:build": "npm run build --workspace @stock-market/web",
+    "web:test": "npm run test --workspace @stock-market/web",
+    "web:lint": "npm run lint --workspace @stock-market/web",
     "quant:start": "python -m quant",
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
     "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
     "test:api": "npm run test --workspace @stock-market/api",
     "test:quant": "python -m pytest services/quant/tests"
   },
