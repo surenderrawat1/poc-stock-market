@@ -26,6 +26,37 @@ The application does not place trades, hold brokerage credentials, or send order
 | ORM/migrations | Prisma | Typed database access and migration management |
 | Deployment | Docker Compose | Local containers and environment configuration |
 
+## Quick start (Ubuntu on WSL2)
+
+Keep the repository in Ubuntu's Linux filesystem (for example, `~/poc-stock-market`) and run these commands from an Ubuntu terminal. For Docker Desktop, enable integration with the Ubuntu WSL distribution. Use Linux Node.js inside WSL rather than the Windows `node.exe`/`npm`; install nvm using its official instructions if needed, then select the repository version:
+
+```bash
+nvm install
+nvm use
+command -v node
+node --version
+npm --version
+```
+
+`command -v node` should resolve to a Linux path, not `/mnt/c/...`. Requirements are Node.js 24.x, npm 10 or newer, Python 3.10 or newer, and Docker Compose. For local quant development, ensure Ubuntu's `python3-venv` package is installed (`sudo apt install python3-venv`).
+
+```bash
+if [ ! -f .env ]; then cp .env.example .env; fi
+nano .env
+npm ci
+docker compose up --detach --wait mysql
+npm run db:validate
+npm run db:generate
+npm run db:migrate:deploy
+docker compose up --build --detach
+```
+
+Replace the placeholder passwords in `.env` before starting. Keep the MySQL password URL-safe because the host `DATABASE_URL` uses it directly. `.env` is ignored by Git. Never put real credentials in `.env.example` or other tracked files.
+
+If you change `MYSQL_HOST_PORT`, update the port in `DATABASE_URL` to match so host-run Prisma commands connect to the same database.
+
+Open <http://127.0.0.1:4200>. The API health endpoint is <http://127.0.0.1:3000/api/v1/health>. MySQL is published only on `127.0.0.1`; the quant service is reachable only on the private Compose network and has no host-published port. The browser reaches API paths through the web development proxy.
+
 ## Quick start (Windows PowerShell)
 
 Requirements: Node.js 22.13 or later within 22.x, or 24.x (Angular and ESLint compatibility), npm 10 or newer, Python 3.10 or newer for local quant commands, and Docker Desktop with Docker Compose for the full stack.
@@ -61,7 +92,7 @@ docker compose down --volumes
 
 ## Local development without Docker web/API containers
 
-If `.env` does not exist, copy `.env.example` to `.env` and replace the placeholder values. Install dependencies with `npm ci`. Start MySQL with `docker compose up --detach --wait mysql`, apply migrations with `npm run db:migrate:deploy`, then use separate PowerShell windows:
+If `.env` does not exist, copy `.env.example` to `.env` and replace the placeholder values. Install dependencies with `npm ci`. Start MySQL with `docker compose up --detach --wait mysql`, apply migrations with `npm run db:migrate:deploy`, then use separate terminal windows. Use PowerShell on Windows or Bash in Ubuntu on WSL2:
 
 ```powershell
 npm run api:start:dev
@@ -71,9 +102,18 @@ npm run api:start:dev
 npm run web:start
 ```
 
-The local Angular proxy sends `/api` requests to `http://127.0.0.1:3000`. To run the quant health service locally, install its development dependencies and run it from the repository root:
+The local Angular proxy sends `/api` requests to `http://127.0.0.1:3000`. To run the quant health service locally on Windows, install its development dependencies and run it from the repository root:
 
 ```powershell
+python -m pip install -e "services/quant[dev]"
+npm run quant:start
+```
+
+On Ubuntu/WSL2, create and activate a virtual environment first:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 python -m pip install -e "services/quant[dev]"
 npm run quant:start
 ```
@@ -101,9 +141,38 @@ Linting is configured for the Angular workspace. API and Python lint commands ar
 
 Prisma migrations are applied forward with `npm run db:migrate:deploy`. Recovery from a faulty migration uses a reviewed corrective migration or a verified database restore; this repository does not define an automatic SQL rollback command.
 
-## Database backup and restore (Windows PowerShell)
+## Database backup and restore
 
 The commands below store a plain SQL dump under the ignored `backups/` directory. Keep backups local or encrypt them before moving them off the device. Restore replaces the configured database; stop the application first and verify the selected backup path.
+
+### Ubuntu on WSL2 (Bash)
+
+Create a backup:
+
+```bash
+mkdir -p backups
+container_id="$(docker compose ps -q mysql)"
+test -n "$container_id"
+docker compose exec -T mysql sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump --single-transaction --add-drop-database --user=root --databases "$MYSQL_DATABASE" > /tmp/stock-market-backup.sql'
+backup_path="backups/stock-market-$(date -u +%Y%m%d-%H%M%S).sql"
+docker cp "${container_id}:/tmp/stock-market-backup.sql" "$backup_path"
+docker compose exec -T mysql rm -f /tmp/stock-market-backup.sql
+ls -lh "$backup_path"
+```
+
+Restore a chosen backup:
+
+```bash
+docker compose stop api web
+container_id="$(docker compose ps -q mysql)"
+backup_path="backups/stock-market-YYYYMMDD-HHMMSS.sql"
+test -s "$backup_path"
+docker cp "$backup_path" "${container_id}:/tmp/stock-market-restore.sql"
+docker compose exec -T mysql sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql --user=root < /tmp/stock-market-restore.sql'
+docker compose exec -T mysql rm -f /tmp/stock-market-restore.sql
+```
+
+### Windows PowerShell
 
 Create a backup:
 
@@ -127,7 +196,7 @@ docker compose exec -T mysql sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql --use
 docker compose exec -T mysql rm -f /tmp/stock-market-restore.sql
 ```
 
-Verify the restored database with `npm run db:validate` and the project checks before resuming application use. A restore procedure should be exercised against disposable local data before relying on backups.
+Check restored-database connectivity and migration state with `npm exec -- prisma migrate status`, validate the Prisma schema with `npm run db:validate`, and run the project checks before resuming application use. A restore procedure should be exercised against disposable local data before relying on backups.
 
 ## Documentation index
 

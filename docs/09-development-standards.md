@@ -94,7 +94,7 @@ Commands should be documented in the root README and package scripts. The root n
 
 API and Python lint commands are not configured. Do not document them as available until a linter is selected and wired into the workspace.
 
-On Windows, copy `.env.example` to the ignored `.env` file only when `.env` does not already exist. Keep credentials in that local file or a secret manager. The Compose file binds MySQL, API, and web host ports to `127.0.0.1`; the quant service has no host-published port. Use the PowerShell backup and restore procedures in the root README. Keep backups outside the database container and encrypt backups before moving them off-device.
+On Windows, copy `.env.example` to the ignored `.env` file only when `.env` does not already exist. For Ubuntu on WSL2, keep the repository in the Linux filesystem, use Linux Node.js selected by the repository's `.nvmrc` rather than Windows Node from `/mnt/c`, install `python3-venv` for local quant development, and enable Docker Desktop integration for Ubuntu. Keep credentials in `.env` or a secret manager. The Compose file binds MySQL, API, and web host ports to `127.0.0.1`; the quant service has no host-published port. Use the platform-appropriate backup and restore procedures in the root README. Keep backups outside the database container and encrypt backups before moving them off-device.
 
 Migrations are applied explicitly with `npm run db:migrate:deploy` after the database is healthy. The API container must not perform schema migrations during startup.
 
